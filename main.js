@@ -105,6 +105,8 @@ class Player {
   }
 
   reset() {   
+    this.speedX = 3;
+    this.speedY = 0;
     this.x = 1;
     this.y = 1;
   }
@@ -145,9 +147,12 @@ function restartGame() {
 function gameStatus(context) {
   if (gameOver) {
     context.textAlign = "center";
-    context.font = "40px Helvetica";
+    context.font = "60px Helvetica";
     context.fillStyle = "white";
-    context.fillText("GAME OVER!", canvas.width / 2, 200);
+    context.fillText("GAME OVER!", canvas.width / 2, 350);
+    context.font = "25px Helvetica"
+    context.fillStyle = "white";
+    context.fillText("To play again press Enter", canvas.width / 2, 390);
   }
 }
 
