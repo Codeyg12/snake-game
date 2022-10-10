@@ -2,6 +2,7 @@ const ctx = canvas.getContext("2d");
 canvas.width = 700;
 canvas.height = 700;
 let gameOver = false;
+let foods = [];
 let colors = [
   'white',
   'blue',
@@ -121,9 +122,14 @@ class Food {
     this.x = Math.floor(Math.random() * this.gameWidth - this.width);
     this.y = Math.floor(Math.random() * this.gameHeight - this.height);
     this.color = color
+    this.markedForDeletion = false
   }
 
-  update() {}
+  update() {
+    if (this.x < player.x + player.width && this.x + this.width > player.x && this.y < player.y + player.height && this.y + this.height > player.y) {
+      this.markedForDeletion = true
+    }
+  }
 
   draw(context) {
     context.fillStyle = this.color;
@@ -137,9 +143,21 @@ class Food {
 
 }
 
+function handleFood() {
+  if (foods.length === 0) {
+    foods.push(new Food(canvas.width, canvas.height, color))
+  }
+
+  foods.forEach(food => {
+    food.draw(ctx)
+    food.update()
+  })
+
+  foods = foods.filter(food => !food.markedForDeletion)
+}
+
 function restartGame() {
   player.reset();
-  food.reset();
   gameOver = false;
   animate();
 }
@@ -158,14 +176,13 @@ function gameStatus(context) {
 
 const input = new InputHandler();
 const player = new Player(canvas.width, canvas.height);
-const food = new Food(canvas.width, canvas.height, color);
 
 function animate() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   player.draw(ctx);
   player.update(input);
-  food.draw(ctx);
   gameStatus(ctx);
+  handleFood()
   if (!gameOver) {
     requestAnimationFrame(animate);
   }
