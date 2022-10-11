@@ -26,7 +26,6 @@ class InputHandler {
         this.keys.indexOf(e.key) === -1
       ) {
         this.keys.push(e.key);
-        console.log(this.keys);
       } else if (e.key === "Enter" && gameOver) {
         restartGame();
       }
@@ -40,7 +39,6 @@ class InputHandler {
         e.key === "ArrowUp"
       ) {
         this.keys.splice(this.keys.indexOf(e.key), 1);
-        console.log(this.keys);
       }
     });
   }
@@ -56,6 +54,7 @@ class Player {
     this.height = 20;
     this.speedX = 3;
     this.speedY = 0;
+    this.total = 1
   }
 
   update(input) {
@@ -72,7 +71,7 @@ class Player {
       this.speedY = 3;
       this.speedX = 0;
     }
-
+    
     // Horizontal
     this.x += this.speedX;
     if (this.x < 0) {
@@ -102,7 +101,7 @@ class Player {
 
   draw(context) {
     context.fillStyle = "white";
-    context.fillRect(this.x, this.y, this.width, this.height);
+    context.fillRect(this.x, this.y, this.width * this.total, this.height);
   }
 
   reset() {   
@@ -110,6 +109,7 @@ class Player {
     this.speedY = 0;
     this.x = 1;
     this.y = 1;
+    this.total = 1;
   }
 }
 
@@ -128,6 +128,7 @@ class Food {
   update() {
     if (this.x < player.x + player.width && this.x + this.width > player.x && this.y < player.y + player.height && this.y + this.height > player.y) {
       this.markedForDeletion = true
+      player.total++
     }
   }
 
@@ -158,6 +159,7 @@ function handleFood() {
 
 function restartGame() {
   player.reset();
+  foods.length = 0
   gameOver = false;
   animate();
 }
